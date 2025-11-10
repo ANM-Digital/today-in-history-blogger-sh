@@ -120,7 +120,7 @@
     </section>
   </main>
 
-  <!-- First AdSense ad in the middle -->
+  <!-- First AdSense ad -->
   <div style="margin: 2rem auto; max-width:100%;">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3389235720496369"
             crossorigin="anonymous"></script>
@@ -133,10 +133,12 @@
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
   </div>
 
-<!-- View in New Page button BELOW everything (outside iframe area) -->
-<div id="viewButtonContainer" style="text-align:center; margin: 2rem 0;"></div>
+  <!-- ✅ Always-visible View in New Page button -->
+  <div id="viewButtonContainer" style="text-align:center; margin: 2rem 0;">
+    <button id="viewNewPageBtn" class="view-new-page">View in New Page</button>
+  </div>
 
-  <!-- Second AdSense ad at the bottom -->
+  <!-- Second AdSense ad -->
   <div style="margin: 2rem auto; max-width:100%;">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3389235720496369"
             crossorigin="anonymous"></script>
@@ -150,7 +152,7 @@
   </div>
 
   <script>
-    // Theme toggle
+    // Theme toggle (unchanged)
     const toggleButton = document.getElementById('theme-toggle');
     const savedTheme = localStorage.getItem('theme');
     if(savedTheme) {
@@ -205,51 +207,45 @@
       }
     }
 
-  async function loadPost(file,label){
-  const content=document.getElementById("content");
-  try{
-    const res=await fetch(`${postsFolder}/${file}`);
-    if(!res.ok) throw new Error(`File not found: ${file}`);
-    const md=await res.text();
-    document.getElementById("mainTitle").textContent=`📜 Today in History – ${label}`;
-    content.innerHTML=marked.parse(md);
+    async function loadPost(file,label){
+      const content=document.getElementById("content");
+      const viewBtn=document.getElementById("viewNewPageBtn");
+      try{
+        const res=await fetch(`${postsFolder}/${file}`);
+        if(!res.ok) throw new Error(`File not found: ${file}`);
+        const md=await res.text();
+        document.getElementById("mainTitle").textContent=`📜 Today in History – ${label}`;
+        content.innerHTML=marked.parse(md);
 
-    // Instead of inserting inside content, we update the fixed external button
-    const buttonContainer=document.getElementById("viewButtonContainer");
-    buttonContainer.innerHTML="";
-    const viewBtn=document.createElement("button");
-    viewBtn.textContent="View in New Page";
-    viewBtn.className="view-new-page";
-    viewBtn.onclick=()=>{
-      const w=window.open("","_blank");
-      w.document.write(`
-        <html>
-        <head>
-          <title>📜 Today in History – ${label}</title>
-          <style>
-            body{font-family:"Segoe UI",sans-serif;padding:2rem;line-height:1.6;background:#f9f9fb;color:#222;}
-            h1,h2,h3{color:#444;}
-            a{color:#0366d6;}
-          </style>
-        </head>
-        <body>
-          <h1>📜 Today in History – ${label}</h1>
-          ${marked.parse(md)}
-        </body>
-        </html>
-      `);
-      w.document.close();
-    };
-    buttonContainer.appendChild(viewBtn);
+        // Update the already visible button
+        viewBtn.onclick=()=>{
+          const w=window.open("","_blank");
+          w.document.write(`
+            <html>
+            <head>
+              <title>📜 Today in History – ${label}</title>
+              <style>
+                body{font-family:"Segoe UI",sans-serif;padding:2rem;line-height:1.6;background:#f9f9fb;color:#222;}
+                h1,h2,h3{color:#444;}
+                a{color:#0366d6;}
+              </style>
+            </head>
+            <body>
+              <h1>📜 Today in History – ${label}</h1>
+              ${marked.parse(md)}
+            </body>
+            </html>
+          `);
+          w.document.close();
+        };
 
-  }catch(err){
-    console.error("Error loading post:",err);
-    content.innerHTML="<p>⚠️ Failed to load this post.</p>";
-  }
-}
+      }catch(err){
+        console.error("Error loading post:",err);
+        content.innerHTML="<p>⚠️ Failed to load this post.</p>";
+      }
+    }
 
     loadPosts();
   </script>
 </body>
 </html>
-
