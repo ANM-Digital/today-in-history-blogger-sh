@@ -1,0 +1,29 @@
+name: Daily Today-in-History Post
+
+# Run daily at 09:00 UTC
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch: # allows manual trigger too
+
+jobs:
+  create-post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate Today-in-History Post
+        run: node scripts/generate-history.js
+        env:
+          BLOG_ID: ${{ secrets.BLOG_ID }}
+          API_KEY: ${{ secrets.API_KEY }}
