@@ -1,102 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Today in History</title>
-  <meta name="description" content="Daily historical events that happened on this date." />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📜 Today in History</title>
+
+  <!-- Base path for GitHub Pages (subfolder safe) -->
+  <base href="/today-in-history-blogger-sh/">
+
+  <!-- Markdown renderer -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <style>
-    :root {
-      --bg: #0f1220;
-      --card: #171a2a;
-      --text: #e8eaf6;
-      --muted: #9aa3b2;
-      --accent: #7aa2ff;
-      --border: #2a2e44;
-    }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
     body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #f9f9fb;
+      color: #222;
       margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-      background: radial-gradient(1200px 600px at 10% -10%, #1a1e33 0%, transparent 60%),
-                  radial-gradient(1200px 600px at 110% 110%, #1a1e33 0%, transparent 60%),
-                  var(--bg);
-      color: var(--text);
-      line-height: 1.6;
     }
     header {
-      padding: 28px 16px 8px;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 1rem;
       text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    header h1 { margin: 0; font-size: clamp(22px, 3.5vw, 34px); letter-spacing: 0.3px; }
-    header p { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
     main {
-      max-width: 980px;
-      margin: 16px auto 48px;
-      padding: 0 16px;
       display: grid;
-      gap: 18px;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr 2fr;
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin: 1rem auto;
+      width: 95%;
     }
-    .row { display: grid; gap: 18px; }
-    @media (min-width: 900px) {
-      .row { grid-template-columns: 2fr 1fr; }
+    .sidebar, .content {
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 1rem 1.2rem;
     }
-    .card {
-      background: linear-gradient(0deg, rgba(255,255,255,0.015), rgba(255,255,255,0.015)) , var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    .sidebar h2 {
+      margin-top: 0;
     }
-    .card h2 {
-      margin: 2px 0 10px;
-      font-size: 18px;
-      letter-spacing: 0.2px;
+    .sidebar ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
     }
-    .subtle { color: var(--muted); font-size: 13px; }
-    .list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
-    .item {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px 12px;
-      background: #14182a;
+    .sidebar li {
+      padding: 0.5rem 0.3rem;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      color: #0366d6;
+      transition: 0.2s;
     }
-    .item .year {
-      display: inline-block;
-      font-variant-numeric: tabular-nums;
-      background: #0f1330;
-      border: 1px solid var(--border);
-      color: var(--accent);
-      padding: 2px 8px;
-      border-radius: 999px;
-      margin-right: 8px;
-      font-size: 12px;
+    .sidebar li:hover,
+    .sidebar li.active {
+      background: #f0f7ff;
     }
-    .item a { color: var(--text); text-decoration: none; border-bottom: 1px dotted #4757a3; }
-    .item a:hover { color: var(--accent); }
-    .loading, .error { color: var(--muted); padding: 12px; }
-    .badge { font-size: 12px; color: var(--muted); }
-    footer {
-      max-width: 980px; margin: 24px auto 40px; padding: 0 16px; color: var(--muted); font-size: 13px;
+    .content h2,
+    .content h3 {
+      color: #444;
     }
-    .sr-only {
-      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;
+    .content p {
+      line-height: 1.6;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Today in History</h1>
-    <p id="dateLine" class="subtle">Loading date…</p>
+    <h1 id="mainTitle">📜 Today in History</h1>
   </header>
 
   <main>
-    <section class="row">
-      <!-- Left: Wikipedia OTD -->
-      <article class="card" id="otdCard" aria-busy="true" aria-live="polite">
-        <h2>Events on this day <span class="badge" id="otdCount"></span></h2>
-        <div class="loading" id="otdLoading">Loading history…</div>
-        <ul class="list" id="o
+    <aside class="sidebar">
+      <h2>🗓️ Daily Posts</h2>
+      <ul id="postList"><li>Loading posts…</li></ul>
+    </aside>
+    <section class="content" id="content">
+      <p>Loading history…</p>
+    </section>
+  </main>
+
+  <script>
+    // ✅ Relative path for GitHub Pages subdirectory
+    const postsFolder = "./scripts/posts";
+
+    async function loadPosts() {
+      const list = document.getElementById("postList");
+      try {
+        const res = await fetch(`${postsFolder}/posts_index.json`);
+        if (!res.ok) throw new Error("posts_index.json not found");
+
+        const files = await res.json();
+        if (!Array.isArray(files) || files.length === 0) {
+          list.innerHTML = "<li>⚠️ No posts available</li>";
+          return;
+        }
+
+        list.innerHTML = "";
+
+        files.forEach((f, i) => {
+          const li = document.createElement("li");
+
+          // Filename expected format: YYYY-MM-DD.md
+          const datePart = f.replace(".md", "");
+          const d = new Date(datePart);
+          const label = isNaN(d)
+            ? f
+            : d.toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              });
+
+          li.textContent = label;
+          li.onclick = () => {
+            document.querySelectorAll(".sidebar li").forEach(li => li.classList.remove("active"));
+            li.classList.add("active");
+            loadPost(f, label);
+          };
+
+          if (i === 0) li.classList.add("active");
+          list.appendChild(li);
+        });
+
+        // Load the newest (first) post by default
+        loadPost(files[0], files[0]);
+
+      } catch (err) {
+        console.error("Error loading posts:", err);
+        list.innerHTML = "<li>⚠️ Failed to load posts.</li>";
+      }
+    }
+
+    async function loadPost(file, label) {
+      const content = document.getElementById("content");
+      try {
+        const res = await fetch(`${postsFolder}/${file}`);
+        if (!res.ok) throw new Error(`File not found: ${file}`);
+        const md = await res.text();
+        document.getElementById("mainTitle").textContent =
+          `📜 Today in History – ${label}`;
+        content.innerHTML = marked.parse(md);
+      } catch (err) {
+        console.error("Error loading post:", err);
+        content.innerHTML = "<p>⚠️ Failed to load this post.</p>";
+      }
+    }
+
+    loadPosts();
+  </script>
+</body>
+</html>
