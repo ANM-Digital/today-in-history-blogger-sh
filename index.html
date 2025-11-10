@@ -133,8 +133,8 @@
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
   </div>
 
-  <!-- View in New Page button below content -->
-  <div id="viewButtonContainer" style="text-align:center;"></div>
+<!-- View in New Page button BELOW everything (outside iframe area) -->
+<div id="viewButtonContainer" style="text-align:center; margin: 2rem 0;"></div>
 
   <!-- Second AdSense ad at the bottom -->
   <div style="margin: 2rem auto; max-width:100%;">
@@ -205,50 +205,51 @@
       }
     }
 
-    async function loadPost(file,label){
-      const content=document.getElementById("content");
-      const buttonContainer=document.getElementById("viewButtonContainer");
-      try{
-        const res=await fetch(`${postsFolder}/${file}`);
-        if(!res.ok) throw new Error(`File not found: ${file}`);
-        const md=await res.text();
-        document.getElementById("mainTitle").textContent=`📜 Today in History – ${label}`;
-        content.innerHTML=marked.parse(md);
+  async function loadPost(file,label){
+  const content=document.getElementById("content");
+  try{
+    const res=await fetch(`${postsFolder}/${file}`);
+    if(!res.ok) throw new Error(`File not found: ${file}`);
+    const md=await res.text();
+    document.getElementById("mainTitle").textContent=`📜 Today in History – ${label}`;
+    content.innerHTML=marked.parse(md);
 
-        // Add "View in New Page" button
-        buttonContainer.innerHTML="";
-        const viewBtn=document.createElement("button");
-        viewBtn.textContent="View in New Page";
-        viewBtn.className="view-new-page";
-        viewBtn.onclick=()=>{
-          const w=window.open("","_blank");
-          w.document.write(`
-            <html>
-            <head>
-              <title>📜 Today in History – ${label}</title>
-              <style>
-                body{font-family:"Segoe UI",sans-serif;padding:2rem;line-height:1.6;background:#f9f9fb;color:#222;}
-                h1,h2,h3{color:#444;}
-                a{color:#0366d6;}
-              </style>
-            </head>
-            <body>
-              <h1>📜 Today in History – ${label}</h1>
-              ${marked.parse(md)}
-            </body>
-            </html>
-          `);
-          w.document.close();
-        };
-        buttonContainer.appendChild(viewBtn);
-      }catch(err){
-        console.error("Error loading post:",err);
-        content.innerHTML="<p>⚠️ Failed to load this post.</p>";
-        buttonContainer.innerHTML="";
-      }
-    }
+    // Instead of inserting inside content, we update the fixed external button
+    const buttonContainer=document.getElementById("viewButtonContainer");
+    buttonContainer.innerHTML="";
+    const viewBtn=document.createElement("button");
+    viewBtn.textContent="View in New Page";
+    viewBtn.className="view-new-page";
+    viewBtn.onclick=()=>{
+      const w=window.open("","_blank");
+      w.document.write(`
+        <html>
+        <head>
+          <title>📜 Today in History – ${label}</title>
+          <style>
+            body{font-family:"Segoe UI",sans-serif;padding:2rem;line-height:1.6;background:#f9f9fb;color:#222;}
+            h1,h2,h3{color:#444;}
+            a{color:#0366d6;}
+          </style>
+        </head>
+        <body>
+          <h1>📜 Today in History – ${label}</h1>
+          ${marked.parse(md)}
+        </body>
+        </html>
+      `);
+      w.document.close();
+    };
+    buttonContainer.appendChild(viewBtn);
+
+  }catch(err){
+    console.error("Error loading post:",err);
+    content.innerHTML="<p>⚠️ Failed to load this post.</p>";
+  }
+}
 
     loadPosts();
   </script>
 </body>
 </html>
+
