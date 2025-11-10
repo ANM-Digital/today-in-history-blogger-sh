@@ -5,61 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📜 Today in History</title>
 
+  <!-- Base path for GitHub Pages (subfolder safe) -->
   <base href="/today-in-history-blogger-sh/">
+
+  <!-- Markdown renderer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <style>
-    :root {
-      --bg-color: #f9f9fb;
-      --text-color: #222;
-      --header-bg: #fff;
-      --sidebar-bg: #fff;
-      --content-bg: #fff;
-      --link-color: #0366d6;
-      --hover-bg: #f0f7ff;
-      --shadow-color: rgba(0,0,0,0.1);
-    }
-    [data-theme="dark"] {
-      --bg-color: #121212;
-      --text-color: #e0e0e0;
-      --header-bg: #1f1f1f;
-      --sidebar-bg: #1a1a1a;
-      --content-bg: #1a1a1a;
-      --link-color: #33aaff;
-      --hover-bg: #222;
-      --shadow-color: rgba(0,0,0,0.5);
-    }
-
     body {
       font-family: "Segoe UI", system-ui, sans-serif;
-      background: var(--bg-color);
-      color: var(--text-color);
+      background: #f9f9fb;
+      color: #222;
       margin: 0;
-      transition: background 0.3s, color 0.3s;
     }
-
     header {
-      background: var(--header-bg);
-      box-shadow: 0 2px 4px var(--shadow-color);
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       padding: 1rem;
       text-align: center;
       position: sticky;
       top: 0;
       z-index: 10;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
-    header h1 { margin: 0; font-size: 1.8rem; }
-    #theme-toggle {
-      cursor: pointer;
-      font-size: 1.2rem;
-      background: none;
-      border: none;
-      color: var(--text-color);
-      transition: color 0.3s;
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
     }
-
     main {
       display: grid;
       grid-template-columns: 1fr 2fr;
@@ -69,45 +40,42 @@
       width: 95%;
     }
     .sidebar, .content {
-      background: var(--sidebar-bg);
+      background: #fff;
       border-radius: 1rem;
-      box-shadow: 0 2px 4px var(--shadow-color);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       padding: 1rem 1.2rem;
-      transition: background 0.3s, color 0.3s;
     }
-    .sidebar h2 { margin-top: 0; }
-    .sidebar ul { list-style: none; padding-left: 0; margin: 0; }
+    .sidebar h2 {
+      margin-top: 0;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
     .sidebar li {
       padding: 0.5rem 0.3rem;
       border-bottom: 1px solid #eee;
       cursor: pointer;
-      color: var(--link-color);
+      color: #0366d6;
       transition: 0.2s;
     }
     .sidebar li:hover,
-    .sidebar li.active { background: var(--hover-bg); }
-    .content h2, .content h3 { color: var(--text-color); }
-    .content p { line-height: 1.6; }
-    a { color: var(--link-color); }
-
-    .view-new-page {
-      display: inline-block;
-      margin: 1rem 0;
-      padding: 0.5rem 1rem;
-      background: #0366d6;
-      color: white;
-      border: none;
-      border-radius: 0.5rem;
-      font-weight: bold;
-      cursor: pointer;
+    .sidebar li.active {
+      background: #f0f7ff;
     }
-    .view-new-page:hover { background: #024b9c; }
+    .content h2,
+    .content h3 {
+      color: #444;
+    }
+    .content p {
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
   <header>
     <h1 id="mainTitle">📜 Today in History</h1>
-    <button id="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
   </header>
 
   <main>
@@ -120,129 +88,70 @@
     </section>
   </main>
 
-  <!-- First AdSense ad -->
-  <div style="margin: 2rem auto; max-width:100%;">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3389235720496369"
-            crossorigin="anonymous"></script>
-    <ins class="adsbygoogle"
-         style="display:block; max-width:100%;"
-         data-ad-client="ca-pub-3389235720496369"
-         data-ad-slot="9772517031"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-  </div>
-
- <!-- ✅ Always visible "View in New Page" button -->
-<div id="viewButtonContainer" style="text-align:center; margin: 2rem 0;">
-  <button class="view-new-page" onclick="window.open(location.href,'_blank')">View in New Page</button>
-</div>
-
-
-  <!-- Second AdSense ad -->
-  <div style="margin: 2rem auto; max-width:100%;">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3389235720496369"
-            crossorigin="anonymous"></script>
-    <ins class="adsbygoogle"
-         style="display:block; max-width:100%; text-align:center;"
-         data-ad-layout="in-article"
-         data-ad-format="fluid"
-         data-ad-client="ca-pub-3389235720496369"
-         data-ad-slot="8200113745"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-  </div>
-
   <script>
-    // Theme toggle (unchanged)
-    const toggleButton = document.getElementById('theme-toggle');
-    const savedTheme = localStorage.getItem('theme');
-    if(savedTheme) {
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      toggleButton.textContent = savedTheme==='dark'?'☀️':'🌙';
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      document.documentElement.setAttribute('data-theme', prefersDark?'dark':'light');
-      toggleButton.textContent = prefersDark?'☀️':'🌙';
-    }
-    toggleButton.addEventListener('click', ()=>{
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      const newTheme = currentTheme==='dark'?'light':'dark';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      toggleButton.textContent = newTheme==='dark'?'☀️':'🌙';
-    });
-
+    // ✅ Relative path for GitHub Pages subdirectory
     const postsFolder = "./scripts/posts";
 
     async function loadPosts() {
       const list = document.getElementById("postList");
       try {
         const res = await fetch(`${postsFolder}/posts_index.json`);
-        if(!res.ok) throw new Error("posts_index.json not found");
+        if (!res.ok) throw new Error("posts_index.json not found");
 
         const files = await res.json();
-        if(!Array.isArray(files)||files.length===0){
-          list.innerHTML="<li>⚠️ No posts available</li>";
+        if (!Array.isArray(files) || files.length === 0) {
+          list.innerHTML = "<li>⚠️ No posts available</li>";
           return;
         }
 
-        list.innerHTML="";
-        files.forEach((f,i)=>{
-          const li=document.createElement("li");
-          const datePart=f.replace(".md","");
-          const d=new Date(datePart);
-          const label=isNaN(d)?f:d.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
-          li.textContent=label;
-          li.onclick=()=>{
-            document.querySelectorAll(".sidebar li").forEach(li=>li.classList.remove("active"));
+        list.innerHTML = "";
+
+        files.forEach((f, i) => {
+          const li = document.createElement("li");
+
+          // Filename expected format: YYYY-MM-DD.md
+          const datePart = f.replace(".md", "");
+          const d = new Date(datePart);
+          const label = isNaN(d)
+            ? f
+            : d.toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              });
+
+          li.textContent = label;
+          li.onclick = () => {
+            document.querySelectorAll(".sidebar li").forEach(li => li.classList.remove("active"));
             li.classList.add("active");
-            loadPost(f,label);
+            loadPost(f, label);
           };
-          if(i===0) li.classList.add("active");
+
+          if (i === 0) li.classList.add("active");
           list.appendChild(li);
         });
-        loadPost(files[0],files[0]);
-      } catch(err){
-        console.error("Error loading posts:",err);
-        list.innerHTML="<li>⚠️ Failed to load posts.</li>";
+
+        // Load the newest (first) post by default
+        loadPost(files[0], files[0]);
+
+      } catch (err) {
+        console.error("Error loading posts:", err);
+        list.innerHTML = "<li>⚠️ Failed to load posts.</li>";
       }
     }
 
-    async function loadPost(file,label){
-      const content=document.getElementById("content");
-      const viewBtn=document.getElementById("viewNewPageBtn");
-      try{
-        const res=await fetch(`${postsFolder}/${file}`);
-        if(!res.ok) throw new Error(`File not found: ${file}`);
-        const md=await res.text();
-        document.getElementById("mainTitle").textContent=`📜 Today in History – ${label}`;
-        content.innerHTML=marked.parse(md);
-
-        // Update the already visible button
-        viewBtn.onclick=()=>{
-          const w=window.open("","_blank");
-          w.document.write(`
-            <html>
-            <head>
-              <title>📜 Today in History – ${label}</title>
-              <style>
-                body{font-family:"Segoe UI",sans-serif;padding:2rem;line-height:1.6;background:#f9f9fb;color:#222;}
-                h1,h2,h3{color:#444;}
-                a{color:#0366d6;}
-              </style>
-            </head>
-            <body>
-              <h1>📜 Today in History – ${label}</h1>
-              ${marked.parse(md)}
-            </body>
-            </html>
-          `);
-          w.document.close();
-        };
-
-      }catch(err){
-        console.error("Error loading post:",err);
-        content.innerHTML="<p>⚠️ Failed to load this post.</p>";
+    async function loadPost(file, label) {
+      const content = document.getElementById("content");
+      try {
+        const res = await fetch(`${postsFolder}/${file}`);
+        if (!res.ok) throw new Error(`File not found: ${file}`);
+        const md = await res.text();
+        document.getElementById("mainTitle").textContent =
+          `📜 Today in History – ${label}`;
+        content.innerHTML = marked.parse(md);
+      } catch (err) {
+        console.error("Error loading post:", err);
+        content.innerHTML = "<p>⚠️ Failed to load this post.</p>";
       }
     }
 
@@ -250,4 +159,3 @@
   </script>
 </body>
 </html>
-
