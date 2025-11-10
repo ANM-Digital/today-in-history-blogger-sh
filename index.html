@@ -5,36 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📜 Today in History</title>
 
-  <!-- First AdSense Ad (Responsive) -->
-  <div style="margin: 1rem 0;">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3389235720496369"
-            crossorigin="anonymous"></script>
-    <ins class="adsbygoogle"
-         style="display:block; max-width:100%;"
-         data-ad-client="ca-pub-3389235720496369"
-         data-ad-slot="9772517031"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-  </div>
-
-  <!-- Second AdSense Ad (In-article, centered, responsive) -->
-  <div style="margin: 1rem 0;">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3389235720496369"
-            crossorigin="anonymous"></script>
-    <ins class="adsbygoogle"
-         style="display:block; max-width:100%; text-align:center;"
-         data-ad-layout="in-article"
-         data-ad-format="fluid"
-         data-ad-client="ca-pub-3389235720496369"
-         data-ad-slot="8200113745"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-  </div>
-
   <!-- Base path for GitHub Pages (subfolder safe) -->
   <base href="/today-in-history-blogger-sh/">
 
@@ -164,6 +134,21 @@
     <button id="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
   </header>
 
+  <!-- First AdSense Ad (Responsive) at top half -->
+  <div style="margin: 1rem auto; max-width:100%;">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3389235720496369"
+            crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block; max-width:100%;"
+         data-ad-client="ca-pub-3389235720496369"
+         data-ad-slot="9772517031"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+
   <main>
     <aside class="sidebar">
       <h2>🗓️ Daily Posts</h2>
@@ -173,6 +158,24 @@
       <p>Loading history…</p>
     </section>
   </main>
+
+  <!-- View in New Page Button below content -->
+  <div id="viewButtonContainer" style="text-align:center; margin:1rem 0;"></div>
+
+  <!-- Second AdSense Ad (bottom) -->
+  <div style="margin: 2rem auto; max-width:100%;">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3389235720496369"
+            crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block; max-width:100%; text-align:center;"
+         data-ad-layout="in-article"
+         data-ad-format="fluid"
+         data-ad-client="ca-pub-3389235720496369"
+         data-ad-slot="8200113745"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
 
   <script>
     // --- Theme toggle ---
@@ -247,6 +250,8 @@
 
     async function loadPost(file, label) {
       const content = document.getElementById("content");
+      const buttonContainer = document.getElementById("viewButtonContainer");
+
       try {
         const res = await fetch(`${postsFolder}/${file}`);
         if (!res.ok) throw new Error(`File not found: ${file}`);
@@ -258,10 +263,9 @@
         content.innerHTML = marked.parse(md);
 
         // Remove previous button if exists
-        const oldBtn = document.querySelector(".view-new-page");
-        if (oldBtn) oldBtn.remove();
+        buttonContainer.innerHTML = "";
 
-        // Add "View in New Page" button
+        // Create "View in New Page" button
         const viewBtn = document.createElement("button");
         viewBtn.textContent = "View in New Page";
         viewBtn.className = "view-new-page";
@@ -286,11 +290,12 @@
           w.document.close();
         };
 
-        content.appendChild(viewBtn);
+        buttonContainer.appendChild(viewBtn);
 
       } catch (err) {
         console.error("Error loading post:", err);
         content.innerHTML = "<p>⚠️ Failed to load this post.</p>";
+        buttonContainer.innerHTML = "";
       }
     }
 
