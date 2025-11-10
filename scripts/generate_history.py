@@ -125,7 +125,8 @@ formatted = [f"😄 {month} {day}\n"]
 for i, e in enumerate(chosen_events):
     icon = ICONS[i % len(ICONS)]
     link = f" [Wikipedia]({e['wiki']})" if e["wiki"] else ""
-    formatted.append(f"{icon} {e['year']} – {e['text']}.{link}")
+    # ✅ Removed the year from the event line
+    formatted.append(f"{icon} {e['text']}.{link}")
 
 # ✨ Fun Fact
 fun_fact = random.choice(FUNNY_FACTS)
@@ -135,7 +136,6 @@ formatted.append(fun_fact)
 # 🎉 Today is celebrated as
 formatted.append(f"\n😄 {month} {day} is celebrated as:\n")
 formatted.extend(celebrations)
-
 # ============================
 # 💾 Save Markdown
 # ============================
@@ -173,3 +173,4 @@ if __name__ == "__main__":
 
     # 👇 run this last to rebuild the index
     update_post_index()
+
