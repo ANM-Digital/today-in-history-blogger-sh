@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📜 Today in History</title>
+
+  <!-- Markdown renderer -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <style>
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #f9f9fb;
+      color: #222;
+      margin: 0;
+    }
+    header {
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 1rem;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    main {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin: 1rem auto;
+      width: 95%;
+    }
+    .sidebar, .content {
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 1rem 1.2rem;
+    }
+    .sidebar h2 {
+      margin-top: 0;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+    .sidebar li {
+      padding: 0.5rem 0.3rem;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      color: #0366d6;
+      transition: 0.2s;
+    }
+    .sidebar li:hover,
+    .sidebar li.active {
+      background: #f0f7ff;
+    }
+    .content h2,
+    .content h3 {
+      color: #444;
+    }
+    .content p {
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="mainTitle">📜 Today in History</h1>
+  </header>
+
+  <main>
+    <aside class="sidebar">
+      <h2>🗓️ Daily Posts</h2>
+      <ul id="postList"><li>Loading posts…</li></ul>
+    </aside>
+    <section class="content" id="content">
+      <p>Loading history…</p>
+    </section>
+  </main>
+
+  <script>
+    // ✅ Updated path for today's date
+    const postsFolder = "./scripts/posts/";
+
+    async function loadPosts() {
+      try {
+        const res = await fetch(`${postsFolder}/posts_index.json`);
+        if (!res.ok) throw new Error("posts_index.json not found");
+        const files = await res.json();
+
+        const list = document.getElementById("postList");
+        list.innerHTML = "";
+
+        files.forEach((f, i) => {
+          const date = f.replace(".md", "");
+          const li = document.createElement("li");
+          const d = new Date(date);
+          const label = isNaN(d)
+            ? date
+            : d.toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              });
+          li.textContent = label;
+          li.onclick = () => {
+            document
+              .querySelectorAll(".sidebar li")
+              .forEach((li) => li.classList.remove("active"));
+            li.classList.add("active");
+            loadPost(f, label);
+          };
+          if (i === 0) li.classList.add("active");
+          list.appendChild(li);
+        });
+
+        // Load the most recent post initially
+        if (files.length > 0) loadPost(files[0], files[0]);
+      } catch (err) {
+        document.getElementById("posts_index").innerHTML =
+          "<li>⚠️ No posts found</li>";
+        console.error("Error loading posts:", err);
+      }
+    }
+
+    async function loadPost(file, label) {
+      try {
+        const res = await fetch(`${postsFolder}/${file}`);
+        const md = await res.text();
+        document.getElementById("mainTitle").textContent =
+          `📜 Today in History – ${label}`;
+        document.getElementById("content").innerHTML = marked.parse(md);
+      } catch (err) {
+        document.getElementById("content").innerHTML =
+          "<p>⚠️ Failed to load post.</p>";
+        console.error("Error loading post:", err);
+      }
+    }
+
+    loadPosts();
+  </script>
+</body>
+</html>
