@@ -41,7 +41,6 @@
       margin: 0;
       transition: background 0.3s, color 0.3s;
     }
-
     header {
       background: var(--header-bg);
       box-shadow: 0 2px 4px var(--shadow-color);
@@ -75,7 +74,6 @@
       margin: 1rem auto;
       width: 95%;
     }
-
     .sidebar, .content {
       background: var(--sidebar-bg);
       border-radius: 1rem;
@@ -83,7 +81,6 @@
       padding: 1rem 1.2rem;
       transition: background 0.3s, color 0.3s;
     }
-
     .sidebar h2 {
       margin-top: 0;
     }
@@ -103,7 +100,6 @@
     .sidebar li.active {
       background: var(--hover-bg);
     }
-
     .content h2,
     .content h3 {
       color: var(--text-color);
@@ -111,22 +107,8 @@
     .content p {
       line-height: 1.6;
     }
-
     a {
       color: var(--link-color);
-    }
-
-    /* Responsive layout for mobile */
-    @media (max-width: 768px) {
-      main {
-        grid-template-columns: 1fr;
-      }
-      .sidebar {
-        order: 2;
-      }
-      .content {
-        order: 1;
-      }
     }
   </style>
 </head>
@@ -147,7 +129,7 @@
   </main>
 
   <script>
-    // --- Dark/Light theme toggle ---
+    // --- Theme toggle ---
     const toggleButton = document.getElementById('theme-toggle');
     const savedTheme = localStorage.getItem('theme');
 
@@ -168,7 +150,7 @@
       toggleButton.textContent = newTheme === 'dark' ? '☀️' : '🌙';
     });
 
-    // --- Posts ---
+    // ✅ Relative path for GitHub Pages subdirectory
     const postsFolder = "./scripts/posts";
 
     async function loadPosts() {
@@ -187,11 +169,16 @@
 
         files.forEach((f, i) => {
           const li = document.createElement("li");
+
           const datePart = f.replace(".md", "");
           const d = new Date(datePart);
           const label = isNaN(d)
             ? f
-            : d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+            : d.toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              });
 
           li.textContent = label;
           li.onclick = () => {
@@ -218,32 +205,9 @@
         const res = await fetch(`${postsFolder}/${file}`);
         if (!res.ok) throw new Error(`File not found: ${file}`);
         const md = await res.text();
-
-        document.getElementById("mainTitle").textContent = `📜 Today in History – ${label}`;
-        content.innerHTML = `
-          <!-- First AdSense Ad -->
-          <div style="margin:1rem 0;">
-            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3389235720496369" crossorigin="anonymous"></script>
-            <ins class="adsbygoogle" style="display:block; max-width:100%;" data-ad-client="ca-pub-3389235720496369" data-ad-slot="9772517031" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-          </div>
-
-          <div>${marked.parse(md)}</div>
-
-          <!-- Second AdSense Ad -->
-          <div style="margin:1rem 0;">
-            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3389235720496369" crossorigin="anonymous"></script>
-            <ins class="adsbygoogle" style="display:block; max-width:100%; text-align:center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-3389235720496369" data-ad-slot="8200113745"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-          </div>
-
-          <div style="text-align:center; margin:1rem 0;">
-            <a href="${postsFolder}/${file}" target="_blank" style="padding:0.6rem 1.2rem; background:#0366d6; color:white; border-radius:0.5rem; text-decoration:none; display:inline-block; font-size:0.95rem;">
-              Open in New Page
-            </a>
-          </div>
-        `;
-
+        document.getElementById("mainTitle").textContent =
+          `📜 Today in History – ${label}`;
+        content.innerHTML = marked.parse(md);
       } catch (err) {
         console.error("Error loading post:", err);
         content.innerHTML = "<p>⚠️ Failed to load this post.</p>";
