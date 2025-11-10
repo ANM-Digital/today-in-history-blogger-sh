@@ -37,6 +37,7 @@
       margin: 0;
       transition: background 0.3s, color 0.3s;
     }
+
     header {
       background: var(--header-bg);
       box-shadow: 0 2px 4px var(--shadow-color);
@@ -189,7 +190,11 @@
           const d=new Date(datePart);
           const label=isNaN(d)?f:d.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
           li.textContent=label;
-          li.onclick=()=>{document.querySelectorAll(".sidebar li").forEach(li=>li.classList.remove("active"));li.classList.add("active");loadPost(f,label)};
+          li.onclick=()=>{
+            document.querySelectorAll(".sidebar li").forEach(li=>li.classList.remove("active"));
+            li.classList.add("active");
+            loadPost(f,label);
+          };
           if(i===0) li.classList.add("active");
           list.appendChild(li);
         });
