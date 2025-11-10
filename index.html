@@ -12,25 +12,60 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <style>
+    /* --- Theme Variables --- */
+    :root {
+      --bg-color: #f9f9fb;
+      --text-color: #222;
+      --header-bg: #fff;
+      --sidebar-bg: #fff;
+      --content-bg: #fff;
+      --link-color: #0366d6;
+      --hover-bg: #f0f7ff;
+      --shadow-color: rgba(0,0,0,0.1);
+    }
+    [data-theme="dark"] {
+      --bg-color: #121212;
+      --text-color: #e0e0e0;
+      --header-bg: #1f1f1f;
+      --sidebar-bg: #1a1a1a;
+      --content-bg: #1a1a1a;
+      --link-color: #33aaff;
+      --hover-bg: #222;
+      --shadow-color: rgba(0,0,0,0.5);
+    }
+
     body {
       font-family: "Segoe UI", system-ui, sans-serif;
-      background: #f9f9fb;
-      color: #222;
+      background: var(--bg-color);
+      color: var(--text-color);
       margin: 0;
+      transition: background 0.3s, color 0.3s;
     }
     header {
-      background: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      background: var(--header-bg);
+      box-shadow: 0 2px 4px var(--shadow-color);
       padding: 1rem;
       text-align: center;
       position: sticky;
       top: 0;
       z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     header h1 {
       margin: 0;
       font-size: 1.8rem;
     }
+    #theme-toggle {
+      cursor: pointer;
+      font-size: 1.2rem;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      transition: color 0.3s;
+    }
+
     main {
       display: grid;
       grid-template-columns: 1fr 2fr;
@@ -40,10 +75,11 @@
       width: 95%;
     }
     .sidebar, .content {
-      background: #fff;
+      background: var(--sidebar-bg);
       border-radius: 1rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px var(--shadow-color);
       padding: 1rem 1.2rem;
+      transition: background 0.3s, color 0.3s;
     }
     .sidebar h2 {
       margin-top: 0;
@@ -57,25 +93,29 @@
       padding: 0.5rem 0.3rem;
       border-bottom: 1px solid #eee;
       cursor: pointer;
-      color: #0366d6;
+      color: var(--link-color);
       transition: 0.2s;
     }
     .sidebar li:hover,
     .sidebar li.active {
-      background: #f0f7ff;
+      background: var(--hover-bg);
     }
     .content h2,
     .content h3 {
-      color: #444;
+      color: var(--text-color);
     }
     .content p {
       line-height: 1.6;
+    }
+    a {
+      color: var(--link-color);
     }
   </style>
 </head>
 <body>
   <header>
     <h1 id="mainTitle">📜 Today in History</h1>
+    <button id="theme-toggle" aria-label="Toggle dark/light mode">🌙</button>
   </header>
 
   <main>
@@ -89,6 +129,27 @@
   </main>
 
   <script>
+    // --- Theme toggle ---
+    const toggleButton = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      toggleButton.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+      toggleButton.textContent = prefersDark ? '☀️' : '🌙';
+    }
+
+    toggleButton.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      toggleButton.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    });
+
     // ✅ Relative path for GitHub Pages subdirectory
     const postsFolder = "./scripts/posts";
 
@@ -109,7 +170,6 @@
         files.forEach((f, i) => {
           const li = document.createElement("li");
 
-          // Filename expected format: YYYY-MM-DD.md
           const datePart = f.replace(".md", "");
           const d = new Date(datePart);
           const label = isNaN(d)
@@ -131,7 +191,6 @@
           list.appendChild(li);
         });
 
-        // Load the newest (first) post by default
         loadPost(files[0], files[0]);
 
       } catch (err) {
