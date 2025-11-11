@@ -1,33 +1,31 @@
 name: Daily Today-in-History Post
 
-# Schedule to run every day at 00:10 AM UTC
 on:
   schedule:
-    - cron: '10 0 * * *'  # 00:10 UTC every day
-  workflow_dispatch:      # optional: allows manual trigger
+    - cron: "10 1 * * *"  # every day at 01:10 UTC
+  workflow_dispatch:
 
 jobs:
   create-post:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repo
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Step 2: Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: '20'
+          python-version: '3.10'
 
-      # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: pip install -r requirements.txt
+        working-directory: ./scripts
 
-      # Step 4: Run generate-history script
-      - name: Generate Today-in-History Post
-        run: node scripts/generate-history.js
-        env:
-          BLOG_ID: ${{ secrets.BLOG_ID }}       # Blogger blog ID
-          API_KEY: ${{ secrets.API_KEY }}       # Blogger API key / OAuth token
+      - name: Generate daily post
+        run: python generate_history.py
+        working-directory: ./scripts
+
+      - name: Publish to Blogger
+        run: python publish_to_blogger.py
+        working-directory: ./scripts
