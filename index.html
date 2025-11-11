@@ -12,25 +12,73 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <style>
+    :root {
+      --bg: #f9f9fb;
+      --text: #222;
+      --card: #fff;
+      --shadow: rgba(0,0,0,0.1);
+      --link: #0366d6;
+      --hover-bg: #f0f7ff;
+    }
+    body.dark {
+      --bg: #1c1c1e;
+      --text: #f2f2f2;
+      --card: #2c2c2e;
+      --shadow: rgba(255,255,255,0.1);
+      --link: #58a6ff;
+      --hover-bg: #2a3b55;
+    }
+
     body {
       font-family: "Segoe UI", system-ui, sans-serif;
-      background: #f9f9fb;
-      color: #222;
+      background: var(--bg);
+      color: var(--text);
       margin: 0;
+      transition: background 0.3s, color 0.3s;
     }
+
+    /* ===== HEADER ===== */
     header {
-      background: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      padding: 1rem;
-      text-align: center;
+      background: var(--card);
+      box-shadow: 0 2px 4px var(--shadow);
+      padding: 1rem 1.5rem;
       position: sticky;
       top: 0;
       z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
     }
     header h1 {
       margin: 0;
       font-size: 1.8rem;
+      white-space: nowrap;
     }
+    header h2 {
+      margin: 0;
+      font-size: 1rem;
+      color: var(--text);
+      opacity: 0.8;
+      font-weight: normal;
+      white-space: nowrap;
+    }
+
+    /* ===== THEME TOGGLE ===== */
+    .theme-toggle {
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      margin-left: 1rem;
+      color: var(--text);
+      transition: transform 0.2s;
+    }
+    .theme-toggle:hover {
+      transform: scale(1.1);
+    }
+
+    /* ===== MAIN LAYOUT ===== */
     main {
       display: grid;
       grid-template-columns: 1fr 2fr;
@@ -39,12 +87,16 @@
       margin: 1rem auto;
       width: 95%;
     }
+
     .sidebar, .content {
-      background: #fff;
+      background: var(--card);
       border-radius: 1rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px var(--shadow);
       padding: 1rem 1.2rem;
+      transition: background 0.3s, color 0.3s;
     }
+
+    /* ===== SIDEBAR ===== */
     .sidebar h2 {
       margin-top: 0;
     }
@@ -55,31 +107,61 @@
     }
     .sidebar li {
       padding: 0.5rem 0.3rem;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid rgba(128,128,128,0.15);
       cursor: pointer;
-      color: #0366d6;
+      color: var(--link);
       transition: 0.2s;
     }
     .sidebar li:hover,
     .sidebar li.active {
-      background: #f0f7ff;
+      background: var(--hover-bg);
     }
+
+    /* ===== CONTENT ===== */
     .content h2,
     .content h3 {
-      color: #444;
+      color: var(--text);
     }
     .content p {
       line-height: 1.6;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 700px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+      header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      header h2 {
+        margin-top: 0.3rem;
+      }
+      .theme-toggle {
+        margin-top: 0.5rem;
+      }
     }
   </style>
 </head>
 <body>
   <header>
+    <!-- 1️⃣ Main header (emoji + title) -->
     <h1 id="mainTitle">📜 Today in History</h1>
+
+    <!-- Right section: secondary header + toggle -->
+    <div style="display:flex; align-items:center; gap:1rem;">
+      <!-- 2️⃣ Secondary header -->
+      <h2 id="subHeader">C BC - MMXV AD (100 BC - 2025 AC)</h2>
+      <!-- 🌗 Dark/Light toggle -->
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">🌙</button>
+    </div>
   </header>
 
   <main>
     <aside class="sidebar">
+      <!-- 3️⃣ Sidebar header -->
       <h2>🗓️ Daily Posts</h2>
       <ul id="postList"><li>Loading posts…</li></ul>
     </aside>
@@ -89,7 +171,17 @@
   </main>
 
   <script>
-    // ✅ Relative path for GitHub Pages subdirectory
+    // ✅ Theme toggle
+    const toggle = document.getElementById("themeToggle");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (prefersDark) document.body.classList.add("dark");
+
+    toggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      toggle.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+    });
+
+    // ✅ Always fetch posts directly from scripts/posts/
     const postsFolder = "./scripts/posts";
 
     async function loadPosts() {
@@ -107,24 +199,26 @@
         list.innerHTML = "";
 
         files.forEach((f, i) => {
-          const li = document.createElement("li");
+          // 🕵️ Hide unwanted file like 2025-11-11.md
+          if (f === "2025-11-11.md") return;
 
-          // Filename expected format: YYYY-MM-DD.md
+          const li = document.createElement("li");
           const datePart = f.replace(".md", "");
           const d = new Date(datePart);
+
+          // Sidebar titles show only Month + Day (no year)
           const label = isNaN(d)
             ? f
             : d.toLocaleDateString("en-US", {
                 month: "long",
-                day: "numeric",
-                year: "numeric",
-              });
+                day: "numeric"
+              }).replace(" ", ""); // e.g., "November23"
 
           li.textContent = label;
           li.onclick = () => {
             document.querySelectorAll(".sidebar li").forEach(li => li.classList.remove("active"));
             li.classList.add("active");
-            loadPost(f, label);
+            loadPost(f);
           };
 
           if (i === 0) li.classList.add("active");
@@ -132,7 +226,7 @@
         });
 
         // Load the newest (first) post by default
-        loadPost(files[0], files[0]);
+        loadPost(files[0]);
 
       } catch (err) {
         console.error("Error loading posts:", err);
@@ -140,14 +234,13 @@
       }
     }
 
-    async function loadPost(file, label) {
+    async function loadPost(file) {
       const content = document.getElementById("content");
       try {
         const res = await fetch(`${postsFolder}/${file}`);
         if (!res.ok) throw new Error(`File not found: ${file}`);
         const md = await res.text();
-        document.getElementById("mainTitle").textContent =
-          `📜 Today in History – ${label}`;
+        document.getElementById("mainTitle").textContent = "📜 Today in History";
         content.innerHTML = marked.parse(md);
       } catch (err) {
         console.error("Error loading post:", err);
