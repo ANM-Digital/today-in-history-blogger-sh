@@ -1,0 +1,13 @@
+{
+  "name": "today-in-history-blogger-sh",
+  "version": "1.0.0",
+  "description": "Automate daily 'Today in History' posts from Wikipedia to Blogger",
+  "scripts": {
+    "generate": "cd scripts && python generate_history.py",
+    "publish": "cd scripts && python publish_to_blogger.py",
+    "build-index": "python build_index.py"
+  },
+  "keywords": ["history", "blogger", "automation", "wikipedia"],
+  "author": "ANM-Digital",
+  "license": "MIT"
+}

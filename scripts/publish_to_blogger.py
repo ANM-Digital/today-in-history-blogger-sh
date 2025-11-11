@@ -2,19 +2,23 @@ import requests
 import json
 import os
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # ================================
 # 🔐 GOOGLE OAUTH CONFIG
 # ================================
-CLIENT_ID = "7XXXXXXXXXXXXX.apps.googleusercontent.com"          # from client_secret.json
-CLIENT_SECRET = "XXXXXXXXXXXXXXXXXXX"  # from client_secret.json
-REFRESH_TOKEN = "XXXXXXXXXXXXXXXXXXXXXX"  # from get_token.py output
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+REFRESH_TOKEN = os.getenv("REFRESH_TOKEN")
 ACCESS_TOKEN = None                   # auto-generated each run
 
 # ================================
 # 🌐 BLOGGER CONFIG
 # ================================
-BLOG_ID = "XXXXXXXXXXXXXXXXX"  # e.g. 1234567890123456789
+BLOG_ID = os.getenv("BLOG_ID")
 POSTS_DIR = os.path.join(os.path.dirname(__file__), "..", "posts")
 
 # ================================
