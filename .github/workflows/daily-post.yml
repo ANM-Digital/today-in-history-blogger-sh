@@ -24,8 +24,5 @@ jobs:
 
       - name: Generate daily post
         run: python generate_history.py
-        working-directory: ./scripts
+        working-directory: ./scripts/posts/
 
-      - name: Publish to Blogger
-        run: python publish_to_blogger.py
-        working-directory: ./scripts
