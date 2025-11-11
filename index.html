@@ -190,19 +190,21 @@
         const res = await fetch(`${postsFolder}/posts_index.json`);
         if (!res.ok) throw new Error("posts_index.json not found");
 
-        const files = await res.json();
+        let files = await res.json();
         if (!Array.isArray(files) || files.length === 0) {
           list.innerHTML = "<li>⚠️ No posts available</li>";
           return;
         }
 
+        // 🆕 Ensure newest files appear first
+        files = files.reverse();
+
         list.innerHTML = "";
 
-      files.forEach((f, i) => {
-  // 🧩 Skip invalid or unreadable filenames only (not the newest one)
-  if (!f.endsWith(".md")) return; // skip non-markdown files
-  if (/^\s*$/.test(f)) return;    // skip empty strings
-
+        files.forEach((f, i) => {
+          // 🧩 Skip invalid or unreadable filenames only (not newest ones)
+          if (!f.endsWith(".md")) return;
+          if (/^\s*$/.test(f)) return;
 
           const li = document.createElement("li");
           const datePart = f.replace(".md", "");
@@ -254,4 +256,3 @@
   </script>
 </body>
 </html>
-
