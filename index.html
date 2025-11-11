@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📜 Today in History</title>
 
-  <!-- Base path for GitHub Pages (subfolder safe) -->
   <base href="/today-in-history-blogger-sh/">
-
-  <!-- Markdown renderer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <style>
@@ -37,7 +34,6 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    /* ===== HEADER ===== */
     header {
       background: var(--card);
       box-shadow: 0 2px 4px var(--shadow);
@@ -50,6 +46,7 @@
       justify-content: space-between;
       flex-wrap: wrap;
     }
+
     header h1 {
       margin: 0;
       font-size: 1.8rem;
@@ -58,13 +55,11 @@
     header h2 {
       margin: 0;
       font-size: 1rem;
-      color: var(--text);
       opacity: 0.8;
       font-weight: normal;
       white-space: nowrap;
     }
 
-    /* ===== THEME TOGGLE ===== */
     .theme-toggle {
       cursor: pointer;
       background: none;
@@ -78,7 +73,6 @@
       transform: scale(1.1);
     }
 
-    /* ===== MAIN LAYOUT ===== */
     main {
       display: grid;
       grid-template-columns: 1fr 2fr;
@@ -96,7 +90,6 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    /* ===== SIDEBAR ===== */
     .sidebar h2 {
       margin-top: 0;
     }
@@ -104,39 +97,39 @@
       list-style: none;
       padding-left: 0;
       margin: 0;
-      max-height: 70vh;
-      overflow-y: auto;
-      scrollbar-width: thin;
     }
     .sidebar li {
-      padding: 0.6rem 0.4rem;
+      padding: 0.5rem 0.3rem;
       border-bottom: 1px solid rgba(128,128,128,0.15);
       cursor: pointer;
       color: var(--link);
-      transition: background 0.2s, color 0.2s;
+      transition: 0.2s;
     }
     .sidebar li:hover,
     .sidebar li.active {
       background: var(--hover-bg);
-      border-radius: 0.3rem;
     }
 
-    /* ===== CONTENT ===== */
-    .content h2,
-    .content h3 {
-      color: var(--text);
-    }
     .content p {
       line-height: 1.6;
-      font-size: 1rem;
-      word-wrap: break-word;
     }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 768px) {
+    /* ===== DROPDOWN (mobile) ===== */
+    #mobileDropdown {
+      display: none;
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(128,128,128,0.3);
+      font-size: 1rem;
+      background: var(--card);
+      color: var(--text);
+    }
+
+    @media (max-width: 700px) {
       main {
         grid-template-columns: 1fr;
-        gap: 1rem;
       }
       header {
         flex-direction: column;
@@ -149,27 +142,11 @@
       .theme-toggle {
         margin-top: 0.5rem;
       }
-      .sidebar {
-        order: 2;
-      }
-      .content {
-        order: 1;
-      }
       .sidebar ul {
-        max-height: none;
-        overflow-y: visible;
+        display: none; /* hide sidebar list on mobile */
       }
-    }
-
-    @media (max-width: 480px) {
-      body {
-        font-size: 0.95rem;
-      }
-      header h1 {
-        font-size: 1.4rem;
-      }
-      .content p {
-        font-size: 0.95rem;
+      #mobileDropdown {
+        display: block; /* show dropdown */
       }
     }
   </style>
@@ -177,7 +154,7 @@
 <body>
   <header>
     <h1 id="mainTitle">📜 Today in History</h1>
-    <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap; justify-content:center;">
+    <div style="display:flex; align-items:center; gap:1rem;">
       <h2 id="subHeader">C BC - MMXV AD (100 BC - 2025 AC)</h2>
       <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">🌙</button>
     </div>
@@ -186,6 +163,11 @@
   <main>
     <aside class="sidebar">
       <h2>🗓️ Daily Posts</h2>
+      <!-- Dropdown for mobile -->
+      <select id="mobileDropdown">
+        <option>Loading posts…</option>
+      </select>
+      <!-- Regular sidebar list -->
       <ul id="postList"><li>Loading posts…</li></ul>
     </aside>
     <section class="content" id="content">
@@ -204,11 +186,12 @@
       toggle.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
     });
 
-    // ✅ Always fetch posts directly from scripts/posts/
     const postsFolder = "./scripts/posts";
 
     async function loadPosts() {
       const list = document.getElementById("postList");
+      const dropdown = document.getElementById("mobileDropdown");
+
       try {
         const res = await fetch(`${postsFolder}/posts_index.json`);
         if (!res.ok) throw new Error("posts_index.json not found");
@@ -216,51 +199,60 @@
         let files = await res.json();
         if (!Array.isArray(files) || files.length === 0) {
           list.innerHTML = "<li>⚠️ No posts available</li>";
+          dropdown.innerHTML = "<option>⚠️ No posts available</option>";
           return;
         }
 
-        // ✅ Sort posts by date (newest → oldest)
-        files.sort((a, b) => {
-          const dateA = new Date(a.replace(".md", ""));
-          const dateB = new Date(b.replace(".md", ""));
-          return dateB - dateA;
-        });
+        // Sort newest → oldest
+        files.sort((a, b) => new Date(b.replace(".md", "")) - new Date(a.replace(".md", "")));
 
         list.innerHTML = "";
+        dropdown.innerHTML = "";
 
         files.forEach((f, i) => {
           if (!f.endsWith(".md")) return;
-          if (/^\s*$/.test(f)) return;
-
-          const li = document.createElement("li");
           const datePart = f.replace(".md", "");
           const d = new Date(datePart);
-
           const label = isNaN(d)
             ? f
-            : d.toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric"
-              }).replace(" ", "");
+            : d.toLocaleDateString("en-US", { month: "long", day: "numeric" });
 
+          // Sidebar list
+          const li = document.createElement("li");
           li.textContent = label;
           li.onclick = () => {
             document.querySelectorAll(".sidebar li").forEach(li => li.classList.remove("active"));
             li.classList.add("active");
+            dropdown.value = f;
             loadPost(f);
-            window.scrollTo({ top: 0, behavior: "smooth" }); // 🧭 better UX on mobile
           };
-
           if (i === 0) li.classList.add("active");
           list.appendChild(li);
+
+          // Dropdown option
+          const opt = document.createElement("option");
+          opt.value = f;
+          opt.textContent = label;
+          dropdown.appendChild(opt);
         });
 
-        // Load the newest post first
+        // Default post = newest
         loadPost(files[0]);
+        dropdown.value = files[0];
+
+        // Handle dropdown change
+        dropdown.onchange = (e) => {
+          const file = e.target.value;
+          if (file) loadPost(file);
+          document.querySelectorAll(".sidebar li").forEach(li => {
+            li.classList.toggle("active", li.textContent === e.target.selectedOptions[0].textContent);
+          });
+        };
 
       } catch (err) {
         console.error("Error loading posts:", err);
         list.innerHTML = "<li>⚠️ Failed to load posts.</li>";
+        dropdown.innerHTML = "<option>⚠️ Failed to load posts</option>";
       }
     }
 
@@ -270,7 +262,6 @@
         const res = await fetch(`${postsFolder}/${file}`);
         if (!res.ok) throw new Error(`File not found: ${file}`);
         const md = await res.text();
-        document.getElementById("mainTitle").textContent = "📜 Today in History";
         content.innerHTML = marked.parse(md);
       } catch (err) {
         console.error("Error loading post:", err);
