@@ -198,9 +198,11 @@
 
         list.innerHTML = "";
 
-        files.forEach((f, i) => {
-          // 🕵️ Hide unwanted file like 2025-11-11.md
-          if (f === "2025-11-11.md") return;
+      files.forEach((f, i) => {
+  // 🧩 Skip invalid or unreadable filenames only (not the newest one)
+  if (!f.endsWith(".md")) return; // skip non-markdown files
+  if (/^\s*$/.test(f)) return;    // skip empty strings
+
 
           const li = document.createElement("li");
           const datePart = f.replace(".md", "");
@@ -252,3 +254,4 @@
   </script>
 </body>
 </html>
+
