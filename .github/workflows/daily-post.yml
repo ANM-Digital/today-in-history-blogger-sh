@@ -2,8 +2,8 @@ name: Daily Today-in-History Post
 
 on:
   schedule:
-    # Run every day at 1:39 PM Istanbul time (10:39 UTC)
-    - cron: "40 10 * * *"
+    # Run every day at 1:52 PM Istanbul time (10:52 UTC)
+    - cron: "52 10 * * *"
   workflow_dispatch:
 
 jobs:
@@ -11,27 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🐍 Set up Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '00:00'
 
-      - name: 🧰 Install dependencies
-        run: |
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Install dependencies
+        run: pip install -r requirements.txt
         working-directory: ./scripts
 
-      - name: 📝 Generate daily post
+      - name: Generate daily post
         run: python generate_history.py
         working-directory: ./scripts/posts/
-
-      - name: 💾 Commit and push changes
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add .
-          git commit -m "🗓️ Auto-generated Today in History post for $(date +'%Y-%m-%d')" || echo "No changes to commit"
-          git push
