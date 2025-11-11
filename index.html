@@ -197,7 +197,13 @@
         }
 
         // 🆕 Ensure newest files appear first
-        files = files.reverse();
+// 🆕 Sort posts by date (newest → oldest)
+files.sort((a, b) => {
+  const dateA = new Date(a.replace(".md", ""));
+  const dateB = new Date(b.replace(".md", ""));
+  return dateB - dateA; // descending order
+});
+
 
         list.innerHTML = "";
 
@@ -256,3 +262,4 @@
   </script>
 </body>
 </html>
+
