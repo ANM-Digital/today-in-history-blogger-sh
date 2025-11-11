@@ -2,7 +2,7 @@ name: Daily Today-in-History Post
 
 on:
   schedule:
-    - cron: "10 3 * * *"  # every day at 06:10 EET (GMT+3, Istanbul time)
+    - cron: "10 7 * * *"  # every day at 06:10 EET (GMT+3, Istanbul time)
   workflow_dispatch:
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '7.10'
 
       - name: Install dependencies
         run: pip install -r requirements.txt
