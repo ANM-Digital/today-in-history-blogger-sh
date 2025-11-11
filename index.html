@@ -149,15 +149,49 @@
         display: block; /* show dropdown */
       }
     }
+
+
+    .ad-box {
+  text-align: center;
+  margin: 25px auto;
+  padding: 15px;
+  border: 2px dashed rgba(128,128,128,0.3);
+  border-radius: 10px;
+  background: var(--card);
+  box-shadow: 0 1px 3px var(--shadow);
+  width: 90%;
+  max-width: 728px;
+  min-height: 90px;
+  color: gray;
+  font-size: 0.9rem;
+}
+.ad-box p {
+  margin: 0 0 5px 0;
+  opacity: 0.7;
+  font-style: italic;
+}
+
   </style>
 </head>
 <body>
 
-  
-  <!-- 🌿 AdSense Unit - Middle of Page -->
-<div style="text-align:center; margin:20px 0;">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3389235720496369"
-          crossorigin="anonymous"></script>
+  <!-- 🌿 AdSense Box 1 - Below Header -->
+<div class="ad-box">
+  <p>Advertisement</p>
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-3389235720496369"
+       data-ad-slot="9772517031"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<!-- 🌿 AdSense Box 2 - Middle of Page -->
+<div class="ad-box">
+  <p>Advertisement</p>
   <ins class="adsbygoogle"
        style="display:block"
        data-ad-client="ca-pub-3389235720496369"
@@ -291,5 +325,6 @@
   </script>
 </body>
 </html>
+
 
 
