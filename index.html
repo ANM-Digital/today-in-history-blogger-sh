@@ -5,22 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📜 Today in History</title>
 
-  <!-- Base path for GitHub Pages (subfolder safe) -->
   <base href="/today-in-history-blogger-sh/">
-
-  <!-- Markdown renderer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <style>
+    :root {
+      --bg: #f9f9fb;
+      --text: #222;
+      --card: #fff;
+      --shadow: rgba(0, 0, 0, 0.1);
+      --link: #0366d6;
+      --hover: #f0f7ff;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #ddd;
+      --card: #1e1e1e;
+      --shadow: rgba(255, 255, 255, 0.1);
+      --link: #66aaff;
+      --hover: #1f2937;
+    }
+
     body {
       font-family: "Segoe UI", system-ui, sans-serif;
-      background: #f9f9fb;
-      color: #222;
+      background: var(--bg);
+      color: var(--text);
       margin: 0;
+      transition: background 0.3s, color 0.3s;
     }
     header {
-      background: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      background: var(--card);
+      box-shadow: 0 2px 4px var(--shadow);
       padding: 1rem;
       display: flex;
       justify-content: space-between;
@@ -35,8 +51,28 @@
     }
     header .secondary-title {
       font-size: 1.2rem;
-      color: #666;
+      color: var(--text);
+      opacity: 0.7;
     }
+
+    /* 🌙 Toggle button */
+    .theme-toggle {
+      background: var(--card);
+      border: 1px solid #ccc;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .theme-toggle:hover {
+      background: var(--hover);
+    }
+
     main {
       display: grid;
       grid-template-columns: 1fr 2fr;
@@ -46,10 +82,11 @@
       width: 95%;
     }
     .sidebar, .content {
-      background: #fff;
+      background: var(--card);
       border-radius: 1rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px var(--shadow);
       padding: 1rem 1.2rem;
+      transition: background 0.3s, color 0.3s;
     }
     .sidebar h2 {
       margin-top: 0;
@@ -61,28 +98,63 @@
     }
     .sidebar li {
       padding: 0.5rem 0.3rem;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #3333;
       cursor: pointer;
-      color: #0366d6;
+      color: var(--link);
       transition: 0.2s;
     }
     .sidebar li:hover,
     .sidebar li.active {
-      background: #f0f7ff;
+      background: var(--hover);
     }
     .content h2,
     .content h3 {
-      color: #444;
+      color: var(--text);
     }
     .content p {
       line-height: 1.6;
+    }
+
+    /* 📱 Mobile floating dropdown */
+    #mobileDropdown {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none;
+      }
+      #mobileDropdown {
+        display: block;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: var(--card);
+        box-shadow: 0 2px 10px var(--shadow);
+        border-radius: 10px;
+        padding: 0.5rem;
+        z-index: 20;
+      }
+      #mobileDropdown select {
+        font-size: 1rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        background: var(--card);
+        color: var(--text);
+      }
     }
   </style>
 </head>
 <body>
   <header>
     <h1 id="mainTitle">📜 Today in History</h1>
-    <div class="secondary-title">C BC - MMXV AD (100 BC - 2025 AC)</div>
+    <div style="display:flex; align-items:center; gap:1rem;">
+      <div class="secondary-title">C BC - MMXV AD (100 BC - 2025 AC)</div>
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">🌙</button>
+    </div>
   </header>
 
   <main>
@@ -95,12 +167,37 @@
     </section>
   </main>
 
+  <!-- 📱 Mobile dropdown -->
+  <div id="mobileDropdown">
+    <select id="mobilePostSelect">
+      <option>Loading posts…</option>
+    </select>
+  </div>
+
   <script>
-    // ✅ Relative path for GitHub Pages subdirectory
     const postsFolder = "./scripts/posts";
+
+    // 🌙 Theme toggle setup
+    const body = document.body;
+    const toggleBtn = document.getElementById("themeToggle");
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+      body.classList.add("dark");
+      toggleBtn.textContent = "☀️";
+    }
+
+    toggleBtn.addEventListener("click", () => {
+      body.classList.toggle("dark");
+      const isDark = body.classList.contains("dark");
+      toggleBtn.textContent = isDark ? "☀️" : "🌙";
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    });
 
     async function loadPosts() {
       const list = document.getElementById("postList");
+      const mobileSelect = document.getElementById("mobilePostSelect");
+
       try {
         const res = await fetch(`${postsFolder}/posts_index.json`);
         if (!res.ok) throw new Error("posts_index.json not found");
@@ -108,38 +205,46 @@
         const files = await res.json();
         if (!Array.isArray(files) || files.length === 0) {
           list.innerHTML = "<li>⚠️ No posts available</li>";
+          mobileSelect.innerHTML = "<option>⚠️ No posts available</option>";
           return;
         }
 
         list.innerHTML = "";
+        mobileSelect.innerHTML = "";
 
         files.forEach((f, i) => {
-          const li = document.createElement("li");
-
-          // Filename expected format: YYYY-MM-DD.md
           const datePart = f.replace(".md", "");
           const d = new Date(datePart);
           const label = isNaN(d)
             ? f
             : `${d.toLocaleDateString("en-US", { month: "long" })} ${d.getDate()}`;
 
+          const li = document.createElement("li");
           li.textContent = label;
           li.onclick = () => {
             document.querySelectorAll(".sidebar li").forEach(li => li.classList.remove("active"));
             li.classList.add("active");
             loadPost(f, label);
           };
-
           if (i === 0) li.classList.add("active");
           list.appendChild(li);
+
+          const opt = document.createElement("option");
+          opt.value = f;
+          opt.textContent = label;
+          mobileSelect.appendChild(opt);
         });
 
-        // Load the newest (first) post by default
         loadPost(files[0], files[0]);
+        mobileSelect.onchange = (e) => {
+          const selectedFile = e.target.value;
+          loadPost(selectedFile, selectedFile);
+        };
 
       } catch (err) {
         console.error("Error loading posts:", err);
         list.innerHTML = "<li>⚠️ Failed to load posts.</li>";
+        mobileSelect.innerHTML = "<option>⚠️ Failed to load posts</option>";
       }
     }
 
@@ -149,8 +254,7 @@
         const res = await fetch(`${postsFolder}/${file}`);
         if (!res.ok) throw new Error(`File not found: ${file}`);
         const md = await res.text();
-        document.getElementById("mainTitle").textContent =
-          `📜 Today in History`;
+        document.getElementById("mainTitle").textContent = `📜 Today in History`;
         content.innerHTML = marked.parse(md);
       } catch (err) {
         console.error("Error loading post:", err);
