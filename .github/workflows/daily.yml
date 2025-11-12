@@ -2,8 +2,7 @@ name: Daily Today-in-History Post
 
 on:
   schedule:
-    # Run every day at 05:50 AM GMT+3 (02:50 UTC)
-    - cron: "50 2 * * *"
+    - cron: '15 3 * * *'   # Runs at 6:15 AM GMT+3 (03:15 UTC)
   workflow_dispatch:
 
 permissions:
