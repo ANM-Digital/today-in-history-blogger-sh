@@ -24,11 +24,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-        working-directory: ./scripts
+        working-directory: ./scripts/posts/
 
       - name: Generate daily post
         run: |
-          cd ./scripts/posts/
+          cd ./scripts/
           python generate_history.py
 
       - name: Commit generated post
