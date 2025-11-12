@@ -9,68 +9,70 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <style>
-    :root {
-      --bg: #f9f9fb;
-      --text: #222;
-      --card: #fff;
-      --shadow: rgba(0, 0, 0, 0.1);
-      --link: #0366d6;
-      --hover: #f0f7ff;
-    }
-
-    body.dark {
-      --bg: #121212;
-      --text: #ddd;
-      --card: #1e1e1e;
-      --shadow: rgba(255, 255, 255, 0.1);
-      --link: #66aaff;
-      --hover: #1f2937;
-    }
-
     body {
       font-family: "Segoe UI", system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      background: #f9f9fb;
+      color: #222;
       margin: 0;
-      transition: background 0.3s, color 0.3s;
     }
+
+    /* ✅ Top Section Styles */
     header {
-      background: var(--card);
-      box-shadow: 0 2px 4px var(--shadow);
-      padding: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: linear-gradient(#ffd700, #f5d547); /* gold tones */
+      text-align: center;
+      padding: 0.6rem 0.5rem;
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 50;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
     header h1 {
       margin: 0;
       font-size: 1.8rem;
+      font-weight: 700;
+      color: black;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
     header .secondary-title {
-      font-size: 1.2rem;
-      color: var(--text);
-      opacity: 0.7;
+      background: linear-gradient(#ffd700, #f5d547);
+      font-size: 1.1rem;
+      color: maroon;
+      font-weight: 700;
+      padding: 0.4rem 0;
+      border-top: 2px solid rgba(128,0,0,0.3);
+      border-bottom: 2px solid rgba(128,0,0,0.3);
+    }
+    header .secondary-title i {
+      font-style: italic;
     }
 
-    /* 🌙 Toggle button */
-    .theme-toggle {
-      background: var(--card);
-      border: 1px solid #ccc;
-      border-radius: 50%;
-      width: 38px;
-      height: 38px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: background 0.3s;
+    /* ✅ Mobile dropdown styling */
+    #mobileDropdown {
+      position: sticky;
+      top: 5.5rem; /* just below the gold header */
+      width: 90%;
+      margin: 0.5rem auto;
+      display: block;
+      z-index: 20;
+      background: #fff;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      padding: 0.5rem;
     }
-    .theme-toggle:hover {
-      background: var(--hover);
+    #mobileDropdown select {
+      width: 100%;
+      padding: 0.6rem;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+    }
+
+    /* Hide dropdown on desktop */
+    @media (min-width: 769px) {
+      #mobileDropdown {
+        display: none;
+      }
     }
 
     main {
@@ -82,11 +84,10 @@
       width: 95%;
     }
     .sidebar, .content {
-      background: var(--card);
+      background: #fff;
       border-radius: 1rem;
-      box-shadow: 0 2px 4px var(--shadow);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       padding: 1rem 1.2rem;
-      transition: background 0.3s, color 0.3s;
     }
     .sidebar h2 {
       margin-top: 0;
@@ -98,64 +99,39 @@
     }
     .sidebar li {
       padding: 0.5rem 0.3rem;
-      border-bottom: 1px solid #3333;
+      border-bottom: 1px solid #eee;
       cursor: pointer;
-      color: var(--link);
+      color: #0366d6;
       transition: 0.2s;
     }
     .sidebar li:hover,
     .sidebar li.active {
-      background: var(--hover);
+      background: #f0f7ff;
     }
     .content h2,
     .content h3 {
-      color: var(--text);
+      color: #444;
     }
     .content p {
       line-height: 1.6;
     }
-
-    /* 📱 Mobile floating dropdown */
-    #mobileDropdown {
-      display: none;
-    }
-    @media (max-width: 768px) {
-      main {
-        grid-template-columns: 1fr;
-      }
-      .sidebar {
-        display: none;
-      }
-      #mobileDropdown {
-        display: block;
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: var(--card);
-        box-shadow: 0 2px 10px var(--shadow);
-        border-radius: 10px;
-        padding: 0.5rem;
-        z-index: 20;
-      }
-      #mobileDropdown select {
-        font-size: 1rem;
-        padding: 0.4rem 0.6rem;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        background: var(--card);
-        color: var(--text);
-      }
-    }
   </style>
 </head>
 <body>
+  <!-- ✅ Gold Header with Two Lines -->
   <header>
-    <h1 id="mainTitle">📜 Today in History</h1>
-    <div style="display:flex; align-items:center; gap:1rem;">
-      <div class="secondary-title">C BC - MMXV AD (100 BC - 2025 AC)</div>
-      <button class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">🌙</button>
+    <h1 id="mainTitle">📜 TODAY IN HISTORY</h1>
+    <div class="secondary-title">
+      C <i>BC</i> - MMXV <i>AD</i> (100 <i>BC</i> - 2025 <i>AD</i>)
     </div>
   </header>
+
+  <!-- ✅ Floating dropdown (3rd line) -->
+  <div id="mobileDropdown">
+    <select id="mobilePostSelect">
+      <option>Loading posts...</option>
+    </select>
+  </div>
 
   <main>
     <aside class="sidebar">
@@ -167,36 +143,12 @@
     </section>
   </main>
 
-  <!-- 📱 Mobile dropdown -->
-  <div id="mobileDropdown">
-    <select id="mobilePostSelect">
-      <option>Loading posts…</option>
-    </select>
-  </div>
-
   <script>
     const postsFolder = "./scripts/posts";
 
-    // 🌙 Theme toggle setup
-    const body = document.body;
-    const toggleBtn = document.getElementById("themeToggle");
-    const savedTheme = localStorage.getItem("theme");
-
-    if (savedTheme === "dark") {
-      body.classList.add("dark");
-      toggleBtn.textContent = "☀️";
-    }
-
-    toggleBtn.addEventListener("click", () => {
-      body.classList.toggle("dark");
-      const isDark = body.classList.contains("dark");
-      toggleBtn.textContent = isDark ? "☀️" : "🌙";
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-    });
-
     async function loadPosts() {
       const list = document.getElementById("postList");
-      const mobileSelect = document.getElementById("mobilePostSelect");
+      const dropdown = document.getElementById("mobilePostSelect");
 
       try {
         const res = await fetch(`${postsFolder}/posts_index.json`);
@@ -205,46 +157,49 @@
         const files = await res.json();
         if (!Array.isArray(files) || files.length === 0) {
           list.innerHTML = "<li>⚠️ No posts available</li>";
-          mobileSelect.innerHTML = "<option>⚠️ No posts available</option>";
+          dropdown.innerHTML = "<option>⚠️ No posts available</option>";
           return;
         }
 
         list.innerHTML = "";
-        mobileSelect.innerHTML = "";
+        dropdown.innerHTML = "";
 
         files.forEach((f, i) => {
+          const li = document.createElement("li");
+          const option = document.createElement("option");
+
           const datePart = f.replace(".md", "");
           const d = new Date(datePart);
           const label = isNaN(d)
             ? f
             : `${d.toLocaleDateString("en-US", { month: "long" })} ${d.getDate()}`;
 
-          const li = document.createElement("li");
           li.textContent = label;
+          option.textContent = label;
+          option.value = f;
+
           li.onclick = () => {
             document.querySelectorAll(".sidebar li").forEach(li => li.classList.remove("active"));
             li.classList.add("active");
             loadPost(f, label);
+            dropdown.value = f;
           };
-          if (i === 0) li.classList.add("active");
-          list.appendChild(li);
 
-          const opt = document.createElement("option");
-          opt.value = f;
-          opt.textContent = label;
-          mobileSelect.appendChild(opt);
+          list.appendChild(li);
+          dropdown.appendChild(option);
+          if (i === 0) li.classList.add("active");
         });
 
-        loadPost(files[0], files[0]);
-        mobileSelect.onchange = (e) => {
-          const selectedFile = e.target.value;
-          loadPost(selectedFile, selectedFile);
+        dropdown.onchange = e => {
+          loadPost(e.target.value, e.target.options[e.target.selectedIndex].text);
         };
+
+        loadPost(files[0], files[0]);
+        dropdown.value = files[0];
 
       } catch (err) {
         console.error("Error loading posts:", err);
         list.innerHTML = "<li>⚠️ Failed to load posts.</li>";
-        mobileSelect.innerHTML = "<option>⚠️ Failed to load posts</option>";
       }
     }
 
@@ -254,7 +209,7 @@
         const res = await fetch(`${postsFolder}/${file}`);
         if (!res.ok) throw new Error(`File not found: ${file}`);
         const md = await res.text();
-        document.getElementById("mainTitle").textContent = `📜 Today in History`;
+        document.getElementById("mainTitle").textContent = "📜 TODAY IN HISTORY";
         content.innerHTML = marked.parse(md);
       } catch (err) {
         console.error("Error loading post:", err);
@@ -264,38 +219,5 @@
 
     loadPosts();
   </script>
-  <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const titles = document.querySelectorAll(".post-title"); // change selector if needed
-
-  // Internal titles (not affected by the duplicate rule)
-  const internalPrefixes = ["today in history", "ourown"];
-
-  // Object to track first-two-word groups
-  const seen = {};
-
-  titles.forEach(titleEl => {
-    const titleText = titleEl.textContent.trim();
-    const firstTwo = titleText.split(" ").slice(0, 2).join(" ").toLowerCase();
-
-    // Skip internal app titles
-    if (internalPrefixes.some(prefix => titleText.toLowerCase().startsWith(prefix))) {
-      return;
-    }
-
-    // Count each prefix and hide after two occurrences
-    seen[firstTwo] = (seen[firstTwo] || 0) + 1;
-
-    if (seen[firstTwo] > 2) {
-      const post = titleEl.closest(".post") || titleEl.parentElement;
-      if (post) {
-        post.style.display = "none";
-      }
-    }
-  });
-});
-</script>
-
 </body>
 </html>
-
