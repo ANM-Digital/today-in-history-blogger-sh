@@ -9,16 +9,27 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
   <style>
-    body {
-      font-family: "Segoe UI", system-ui, sans-serif;
-      background: #f9f9fb;
-      color: #222;
-      margin: 0;
+    :root {
+      --gold: #ffd700;
+      --gold-light: #f5d547;
+      --maroon: #800000;
+      --light-bg: #f9f9fb;
+      --dark-bg: #1e1e1e;
+      --text-light: #222;
+      --text-dark: #f9f9fb;
     }
 
-    /* ✅ Top Section Styles */
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--light-bg);
+      color: var(--text-light);
+      margin: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* 🌟 Header */
     header {
-      background: linear-gradient(#ffd700, #f5d547); /* gold tones */
+      background: linear-gradient(var(--gold), var(--gold-light));
       text-align: center;
       padding: 0.6rem 0.5rem;
       position: sticky;
@@ -26,31 +37,62 @@
       z-index: 50;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
-    header h1 {
+
+    /* ✅ Frame for icon + title + toggle */
+    .header-frame {
+      background: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border-radius: 0.6rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .header-frame h1 {
       margin: 0;
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: 700;
       color: black;
       letter-spacing: 1px;
       text-transform: uppercase;
     }
+
+    .toggle-btn {
+      cursor: pointer;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 0.4rem;
+      padding: 0.3rem 0.6rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #333;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .toggle-btn:hover {
+      background: #eee;
+    }
+
     header .secondary-title {
-      background: linear-gradient(#ffd700, #f5d547);
+      background: linear-gradient(var(--gold), var(--gold-light));
       font-size: 1.1rem;
-      color: maroon;
+      color: var(--maroon);
       font-weight: 700;
       padding: 0.4rem 0;
       border-top: 2px solid rgba(128,0,0,0.3);
       border-bottom: 2px solid rgba(128,0,0,0.3);
     }
+
     header .secondary-title i {
       font-style: italic;
     }
 
-    /* ✅ Mobile dropdown styling */
+    /* ✅ Mobile dropdown */
     #mobileDropdown {
       position: sticky;
-      top: 5.5rem; /* just below the gold header */
+      top: 6rem;
       width: 90%;
       margin: 0.5rem auto;
       display: block;
@@ -60,19 +102,13 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.15);
       padding: 0.5rem;
     }
+
     #mobileDropdown select {
       width: 100%;
       padding: 0.6rem;
       font-size: 1rem;
       border-radius: 0.5rem;
       border: 1px solid #ccc;
-    }
-
-    /* Hide dropdown on desktop */
-    @media (min-width: 769px) {
-      #mobileDropdown {
-        display: none;
-      }
     }
 
     main {
@@ -83,20 +119,24 @@
       margin: 1rem auto;
       width: 95%;
     }
+
     .sidebar, .content {
       background: #fff;
       border-radius: 1rem;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       padding: 1rem 1.2rem;
     }
+
     .sidebar h2 {
       margin-top: 0;
     }
+
     .sidebar ul {
       list-style: none;
       padding-left: 0;
       margin: 0;
     }
+
     .sidebar li {
       padding: 0.5rem 0.3rem;
       border-bottom: 1px solid #eee;
@@ -104,29 +144,66 @@
       color: #0366d6;
       transition: 0.2s;
     }
+
     .sidebar li:hover,
     .sidebar li.active {
       background: #f0f7ff;
     }
+
     .content h2,
     .content h3 {
       color: #444;
     }
+
     .content p {
       line-height: 1.6;
+    }
+
+    /* ✅ Hide sidebar on mobile */
+    @media (max-width: 768px) {
+      main {
+        display: block;
+      }
+      .sidebar {
+        display: none;
+      }
+    }
+
+    /* 🌙 Dark Mode */
+    body.dark {
+      background: var(--dark-bg);
+      color: var(--text-dark);
+    }
+
+    body.dark .content,
+    body.dark .sidebar,
+    body.dark #mobileDropdown {
+      background: #2b2b2b;
+      color: var(--text-dark);
+    }
+
+    body.dark .toggle-btn {
+      background: #333;
+      color: #f5f5f5;
+      border-color: #555;
     }
   </style>
 </head>
 <body>
-  <!-- ✅ Gold Header with Two Lines -->
+  <!-- ✅ Header -->
   <header>
-    <h1 id="mainTitle">📜 TODAY IN HISTORY</h1>
+    <div class="header-frame">
+      <span style="font-size:1.5rem;">📜</span>
+      <h1 id="mainTitle">TODAY IN HISTORY</h1>
+      <button id="toggleTheme" class="toggle-btn">☀️ / 🌙</button>
+    </div>
+
     <div class="secondary-title">
       C <i>BC</i> - MMXV <i>AD</i> (100 <i>BC</i> - 2025 <i>AD</i>)
     </div>
   </header>
 
-  <!-- ✅ Floating dropdown (3rd line) -->
+  <!-- ✅ Mobile Dropdown -->
   <div id="mobileDropdown">
     <select id="mobilePostSelect">
       <option>Loading posts...</option>
@@ -138,6 +215,7 @@
       <h2>🗓️ Daily Posts</h2>
       <ul id="postList"><li>Loading posts…</li></ul>
     </aside>
+
     <section class="content" id="content">
       <p>Loading history…</p>
     </section>
@@ -145,6 +223,13 @@
 
   <script>
     const postsFolder = "./scripts/posts";
+
+    // 🌙 Dark/Light toggle
+    const toggle = document.getElementById("toggleTheme");
+    toggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      toggle.textContent = document.body.classList.contains("dark") ? "🌙" : "☀️";
+    });
 
     async function loadPosts() {
       const list = document.getElementById("postList");
@@ -161,6 +246,12 @@
           return;
         }
 
+        // ✅ Hide sidebar if less than 3 posts
+        document.querySelector(".sidebar").style.display = files.length < 3 ? "none" : "";
+
+        const seen = {}; // for duplicate first-two-words filter
+        const internalPrefixes = ["today in history", "ourown"];
+
         list.innerHTML = "";
         dropdown.innerHTML = "";
 
@@ -173,6 +264,13 @@
           const label = isNaN(d)
             ? f
             : `${d.toLocaleDateString("en-US", { month: "long" })} ${d.getDate()}`;
+
+          // ✅ Filter duplicates by first 2 words
+          const firstTwo = label.split(" ").slice(0, 2).join(" ").toLowerCase();
+          if (!internalPrefixes.some(p => label.toLowerCase().startsWith(p))) {
+            seen[firstTwo] = (seen[firstTwo] || 0) + 1;
+            if (seen[firstTwo] > 2) return; // skip adding this post
+          }
 
           li.textContent = label;
           option.textContent = label;
@@ -200,6 +298,7 @@
       } catch (err) {
         console.error("Error loading posts:", err);
         list.innerHTML = "<li>⚠️ Failed to load posts.</li>";
+        dropdown.innerHTML = "<option>⚠️ Failed to load posts</option>";
       }
     }
 
@@ -209,7 +308,7 @@
         const res = await fetch(`${postsFolder}/${file}`);
         if (!res.ok) throw new Error(`File not found: ${file}`);
         const md = await res.text();
-        document.getElementById("mainTitle").textContent = "📜 TODAY IN HISTORY";
+        document.getElementById("mainTitle").textContent = "TODAY IN HISTORY";
         content.innerHTML = marked.parse(md);
       } catch (err) {
         console.error("Error loading post:", err);
