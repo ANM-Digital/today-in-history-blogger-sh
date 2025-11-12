@@ -159,15 +159,19 @@
       line-height: 1.6;
     }
 
-    /* ✅ Hide sidebar on mobile */
     @media (max-width: 768px) {
-      main {
-        display: block;
-      }
-      .sidebar {
-        display: none;
-      }
-    }
+  main {
+    display: block;
+  }
+  .sidebar {
+    display: none !important;  /* force hide */
+    width: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+  }
+}
+
 
     /* 🌙 Dark Mode */
     body.dark {
@@ -320,3 +324,4 @@
   </script>
 </body>
 </html>
+
