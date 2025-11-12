@@ -1,0 +1,27 @@
+name: Daily Today-in-History Post
+
+on:
+  schedule:
+    - cron: "40 2 * * *"  # every day at 05:15 EET (GMT+3, Istanbul time)
+  workflow_dispatch:
+
+jobs:
+  create-post:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        working-directory: ./scripts
+
+      - name: Generate daily post
+        run: python generate_history.py
+        working-directory: ./scripts/posts/
