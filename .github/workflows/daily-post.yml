@@ -2,8 +2,12 @@ name: Daily Today-in-History Post
 
 on:
   schedule:
-    - cron: "15 2 * * *"  # every day at 05:15 EET (GMT+3, Istanbul time)
+    # Run every day at 05:25 AM GMT+3 (02:25 UTC)
+    - cron: "25 2 * * *"
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   create-post:
@@ -16,12 +20,31 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
+
+      - name: Show working directory and files
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Files:"
+          ls -R
 
       - name: Install dependencies
         run: pip install -r requirements.txt
         working-directory: ./scripts
 
       - name: Generate daily post
-        run: python generate_history.py
+        run: |
+          echo "Running generator..."
+          python generate_history.py
+          echo "Listing files after generation:"
+          ls -R
         working-directory: ./scripts/posts/
+
+      - name: Commit and push new post
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "🗓️ Auto-generated Today in History post [$(date)]" || echo "No changes to commit"
+          git push
