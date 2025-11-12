@@ -264,5 +264,38 @@
 
     loadPosts();
   </script>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const titles = document.querySelectorAll(".post-title"); // change selector if needed
+
+  // Internal titles (not affected by the duplicate rule)
+  const internalPrefixes = ["today in history", "ourown"];
+
+  // Object to track first-two-word groups
+  const seen = {};
+
+  titles.forEach(titleEl => {
+    const titleText = titleEl.textContent.trim();
+    const firstTwo = titleText.split(" ").slice(0, 2).join(" ").toLowerCase();
+
+    // Skip internal app titles
+    if (internalPrefixes.some(prefix => titleText.toLowerCase().startsWith(prefix))) {
+      return;
+    }
+
+    // Count each prefix and hide after two occurrences
+    seen[firstTwo] = (seen[firstTwo] || 0) + 1;
+
+    if (seen[firstTwo] > 2) {
+      const post = titleEl.closest(".post") || titleEl.parentElement;
+      if (post) {
+        post.style.display = "none";
+      }
+    }
+  });
+});
+</script>
+
 </body>
 </html>
+
