@@ -2,7 +2,7 @@ name: Daily Today-in-History Post
 
 on:
   schedule:
-    - cron: '30 3 * * *'   # Runs at 06:30 AM GMT+3 (03:30 UTC)
+    - cron: '45 3 * * *'   # Runs at 06:45 AM GMT+3 (03:45 UTC)
   workflow_dispatch:
 
 permissions:
@@ -33,7 +33,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # Stage only new posts (assumes script outputs a single file or predictable pattern)
           git add ./scripts/posts/*.md
           git diff --cached --quiet || git commit -m "🗓️ Auto-generated Today in History post [$(date)]"
           git push
