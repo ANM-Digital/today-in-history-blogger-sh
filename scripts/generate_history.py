@@ -8,7 +8,7 @@ import random
 # 📌 CONSTANTS
 # ============================
 ICONS = ["⚔️", "🏰", "📜", "🛡️", "⚓", "🚀", "💼", "🎖️", "📡", "🏙️", "⚙️", "💥", "🕊️"]
-POSTS_DIR = "/scripts/posts"
+POSTS_DIR = "./scripts/posts"
 
 FUNNY_FACTS = [
     "🎩 In 1752, Britain skipped 11 days. People thought the government stole their lives.",
@@ -173,5 +173,6 @@ if __name__ == "__main__":
 
     # 👇 run this last to rebuild the index
     update_post_index()
+
 
 
