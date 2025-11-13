@@ -2,7 +2,7 @@ name: Daily Today-in-History Post
 
 on:
   schedule:
-    - cron: "59 1 * * *"  # every day at 04:59 EET (GMT+3, Istanbul time)
+    - cron: "15 2 * * *"  # every day at 05:15 EET (GMT+3, Istanbul time)
   workflow_dispatch:
 
 jobs:
@@ -24,7 +24,7 @@ jobs:
 
       - name: Generate daily post
         run: python generate_history.py
-        working-directory: ./scripts
+        working-directory: ./scripts/posts/
 
       - name: Publish to Blogger
         run: python publish_to_blogger.py
