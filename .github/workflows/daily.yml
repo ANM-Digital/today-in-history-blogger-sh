@@ -2,7 +2,8 @@ name: Daily Today-in-History Post
 
 on:
   schedule:
-    - cron: "19 9 * * *"  # runs every day at 11:25 GMT+3 (Istanbul)
+    - cron: "0 0 * * *"  # runs every day at 00:00 UTC
+
   workflow_dispatch:
 
 # ✅ Restrict token permissions to minimum
