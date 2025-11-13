@@ -2,7 +2,7 @@ name: Daily Today-in-History Post
 
 on:
   schedule:
-    - cron: "19 7 * * *"  # every day at 05:15 EET (GMT+3, Istanbul time)
+    - cron: "33 7 * * *"  # every day at 05:15 EET (GMT+3, Istanbul time)
   workflow_dispatch:
 
 jobs:
