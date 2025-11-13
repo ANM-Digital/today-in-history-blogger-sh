@@ -2,7 +2,7 @@ name: Daily Today-in-History Post
 
 on:
   schedule:
-    - cron: "14 8 * * *"  # runs every day at 11:00 GMT+3 (Istanbul)
+    - cron: "25 8 * * *"  # runs every day at 11:25 GMT+3 (Istanbul)
   workflow_dispatch:
 
 # ✅ Restrict token permissions to minimum
@@ -24,18 +24,18 @@ jobs:
         with:
           python-version: '3.11'
 
-      # ✅ Correct path to requirements inside scripts folder
+      # ✅ Install dependencies from scripts folder
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r scripts/requirements.txt
 
-      # ✅ Run post generation script
+      # ✅ Correct Python script name
       - name: Generate daily post
-        run: python generate.py
+        run: python scripts/generate_history.py
 
       - name: Commit and push results
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git add scripts/posts/*.md scripts/posts/posts_index.json
-          git commit -m "🕰️ Auto-update: Today in History post"
+          git add scripts/posts/*.md scripts/posts/posts_index.json || echo "No new posts to add"
+          git commit -m "🕰️ Auto-update: Today in History post" || echo "Nothing to commit"
           git push
