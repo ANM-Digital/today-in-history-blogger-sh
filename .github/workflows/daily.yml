@@ -2,7 +2,7 @@ name: Daily Today-in-History Post
 
 on:
   schedule:
-    - cron: "52 6 * * *"  # every day at 05:15 EET (GMT+3, Istanbul time)
+    - cron: "00 7 * * *"  # every day at 05:15 EET (GMT+3, Istanbul time)
   workflow_dispatch:
 
 jobs:
@@ -20,12 +20,8 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
-        working-directory: /
+        working-directory: ./scripts/requirements.txt
 
       - name: Generate daily post
         run: python generate_history.py
         working-directory: ./scripts/posts/
-
-      - name: Publish to Blogger
-        run: python publish_to_blogger.py
-        working-directory: ./scripts/posts
