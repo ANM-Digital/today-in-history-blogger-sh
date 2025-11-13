@@ -19,9 +19,9 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r ./scripts/requirements.txt
         working-directory: ./scripts/requirements.txt
 
       - name: Generate daily post
-        run: python generate_history.py
+        run: python ./scripts/generate_history.py
         working-directory: ./scripts/posts/
