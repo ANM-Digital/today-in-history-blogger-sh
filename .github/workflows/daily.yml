@@ -2,7 +2,7 @@ name: Daily Today-in-History Post
 
 on:
   schedule:
-    - cron: "00 8 * * *"  # runs every day at 11:00 GMT+3 (Istanbul)
+    - cron: "14 8 * * *"  # runs every day at 11:00 GMT+3 (Istanbul)
   workflow_dispatch:
 
 # ✅ Restrict token permissions to minimum
@@ -26,11 +26,11 @@ jobs:
 
       # ✅ Correct path to requirements inside scripts folder
       - name: Install dependencies
-        run: pip install -r scripts/requirements.txt
+        run: pip install -r requirements.txt
 
       # ✅ Run post generation script
       - name: Generate daily post
-        run: python scripts/generate.py
+        run: python generate.py
 
       - name: Commit and push results
         run: |
