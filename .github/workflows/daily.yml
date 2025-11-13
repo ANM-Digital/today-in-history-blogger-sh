@@ -2,11 +2,8 @@ name: Daily Today-in-History Post
 
 on:
   schedule:
-    - cron: '15 11pm * * *'   # 07:35 AM GMT+3 (04:35 UTC)
+    - cron: "59 1 * * *"  # every day at 04:59 EET (GMT+3, Istanbul time)
   workflow_dispatch:
-
-permissions:
-  contents: write  # allows committing generated posts
 
 jobs:
   create-post:
@@ -22,19 +19,13 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-        working-directory: ./scripts/posts/
+        run: pip install -r requirements.txt
+        working-directory: ./scripts
 
       - name: Generate daily post
-        run: |
-          cd ./scripts/
-          python generate_history.py
+        run: python generate_history.py
+        working-directory: ./scripts
 
-      - name: Commit generated post
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add ./scripts/posts/*.md
-          git diff --cached --quiet || git commit -m "🗓️ Auto-generated Today in History post [$(date)]"
-          git push
+      - name: Publish to Blogger
+        run: python publish_to_blogger.py
+        working-directory: ./scripts/posts
