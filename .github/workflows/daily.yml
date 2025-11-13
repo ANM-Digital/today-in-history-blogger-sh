@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
-        working-directory: ./scripts
+        working-directory: .
 
       - name: Generate daily post
         run: python generate_history.py
