@@ -203,7 +203,7 @@
     </div>
 
     <div class="secondary-title">
-      MMCCX <i>BC</i> - MMXV <i>AD</i> (2210 <i>BC</i> - 2025 <i>AD</i>)
+      MMCCX <i>BC</i> - <span id="endYearRoman"></span> <i>AD</i> (2210 <i>BC</i> - <span id="endYear"></span> <i>AD</i>)
     </div>
   </header>
 
@@ -226,6 +226,30 @@
   </main>
 
   <script>
+
+    // Keep both header year representations current, including across New Year.
+    (() => {
+      function toRoman(year) {
+        const numerals = [[1000, "M"], [900, "CM"], [500, "D"], [400, "CD"],
+          [100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"],
+          [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
+        let result = "";
+        for (const [value, numeral] of numerals) {
+          while (year >= value) { result += numeral; year -= value; }
+        }
+        return result;
+      }
+
+      function updateHeaderYear() {
+        const year = new Date().getFullYear();
+        document.getElementById("endYear").textContent = String(year);
+        document.getElementById("endYearRoman").textContent = toRoman(year);
+      }
+
+      updateHeaderYear();
+      setInterval(updateHeaderYear, 60 * 1000);
+      document.addEventListener("visibilitychange", updateHeaderYear);
+    })();
     const postsFolder = "./scripts/posts";
 
     // 🌙 Dark/Light toggle
